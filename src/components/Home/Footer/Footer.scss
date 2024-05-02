@@ -1,0 +1,35 @@
+.footer-container {
+    background-color: #f8f5ee;
+
+    height: auto;
+    .footer-content {
+        .title-1,
+        .title-2,
+        .title-3,
+        .title-4 {
+            color: #72c238;
+            font-weight: 600;
+            font-size: 20px;
+            ul {
+                margin-top: 10px;
+                li {
+                    list-style: none;
+                    color: #000;
+                    font-size: 16px;
+                    font-weight: 400;
+                    margin-top: 10px;
+                    i {
+                        margin-right: 5px;
+                    }
+                }
+            }
+        }
+        .title-3 {
+            ul {
+                li {
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+}
