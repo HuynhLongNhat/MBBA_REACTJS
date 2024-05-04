@@ -1,89 +1,133 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
-import { CreateNewTypeProduct, UpdateTypeProduct } from "../../../../../service/userService";
 import CommonUtils from "./../../../../../utils/CommonUtils"
 import Modal from "react-bootstrap/Modal";
 // import {   } from "../../service/UserService";
 import { toast } from "react-toastify";
 import _ from "lodash";
-import "./ModalHandleTypeProduct.scss"
+import "./ModalHandleProduct.scss"
+import Select from "react-select"
+import { useDispatch, useSelector } from "react-redux";
+import { getListTypeProduct, createNewProduct, update_Product } from "../../../../../redux/slices/ProductSlice"
+const ModalHandleProduct = (props) => {
 
-import { useDispatch } from "react-redux";
-import { createTypeProduct, editTypeProduct } from "../../../../../redux/slices/ProductSlice"
+    const { show, toggleShowModal, action, dataEditProduct } = props;
 
-const ModalHandleTypeProduct = (props) => {
 
-    const { show, toggleShowModal, action, dataEditTypeProduct } = props;
+    const listType = useSelector((state) => state.product.listType)
+    const [selectedType, setSelectedType] = useState('')
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
+    const [quantity, setQuantity] = useState(0);
+    const [cost, setCost] = useState(0)
     const [imageBase64, setImageBase64] = useState('')
     const [image, setImage] = useState('');
     const dispatch = useDispatch();
     const defaultValidInput = {
+        selectedType: true,
         name: true,
         description: true,
+        quantity: true,
+        cost: true,
         image: true
     }
     const [checkValid, setCheckValid] = useState(defaultValidInput)
 
     useEffect(() => {
+        dispatch(getListTypeProduct())
+
+    }, [])
+
+    useEffect(() => {
         if (action === "UPDATE") {
-            setName(dataEditTypeProduct.name)
-            setDescription(dataEditTypeProduct.description);
-            setImageBase64(dataEditTypeProduct.image)
-            setImage(dataEditTypeProduct.image)
+            setSelectedType(dataEditProduct.type_id)
+            setName(dataEditProduct.name)
+            setDescription(dataEditProduct.description);
+            setQuantity(dataEditProduct.quantity);
+            setCost(dataEditProduct.cost)
+            setImageBase64(dataEditProduct.image)
+            setImage(dataEditProduct.image)
 
 
         }
-    }, [dataEditTypeProduct])
+    }, [dataEditProduct])
     useEffect(() => {
         if (action === "CREATE") {
+            setSelectedType('')
             setName("")
             setDescription("");
+            setQuantity('');
+            setCost('')
             setImage("")
         }
     }, [action])
 
-
     const checkInvalidInput = () => {
         setCheckValid(defaultValidInput)
+        if (!selectedType) {
+            toast.error('Vui lòng chọn loại cây!');
+            setCheckValid({ ...defaultValidInput, selectedType: false })
+            return false;
+        }
         if (!name) {
-            toast.error('Vui lòng nhập loại sản phẩm!');
+            toast.error('Vui lòng nhập tên cây!');
             setCheckValid({ ...defaultValidInput, name: false })
             return false;
         }
         if (!description) {
-            toast.error('Vui lòng nhập mô tả sản phẩm!');
+            toast.error('Vui lòng nhập mô tả cây!');
             setCheckValid({ ...defaultValidInput, description: false });
             return false;
         }
+        if (!quantity) {
+            toast.error('Vui lòng nhập số lượng cây!');
+            setCheckValid({ ...defaultValidInput, quantity: false });
+            return false;
+        }
+        if (!cost) {
+            toast.error('Vui lòng nhập giá tiền cây!');
+            setCheckValid({ ...defaultValidInput, cost: false });
+            return false;
+        }
         if (!image) {
-            toast.error('Vui lòng tải ảnh sản phẩm!');
+            toast.error('Vui lòng tải ảnh cây!');
             setCheckValid({ ...defaultValidInput, image: false })
             return false
         }
         return true;
     }
     const handleSaveNewTypeProduct = async () => {
+
+
+
         let check = checkInvalidInput()
         if (check === true) {
 
+
             const typeProduct = action === "CREATE"
                 ? (
-                    dispatch(createTypeProduct({
+                    dispatch(createNewProduct({
+                        selectedType: selectedType,
                         name: name,
                         description: description,
+                        quantity: quantity,
+                        cost: cost,
                         image: imageBase64
+
                     })))
 
                 : (
-                    dispatch(editTypeProduct(
+                    dispatch(update_Product(
                         {
-                            id: dataEditTypeProduct.id,
+                            id: dataEditProduct.id,
+                            selectedType: selectedType,
                             name: name,
                             description: description,
+                            quantity: quantity,
+                            cost: cost,
                             image: imageBase64
+
                         }
                     )))
 
@@ -92,6 +136,9 @@ const ModalHandleTypeProduct = (props) => {
                 setName('');
                 setDescription('');
                 setImage('')
+                setQuantity(0);
+                setCost(0);
+                setImage()
             }
 
         }
@@ -122,6 +169,27 @@ const ModalHandleTypeProduct = (props) => {
                             <label>
                                 Loại cây <span className="text-danger">(*)</span>
                             </label>
+                            <select className={checkValid.selectedType ? "form-control" : "form-control is-invalid"}
+                                value={selectedType}
+                                onChange={(event) => setSelectedType(event.target.value)}
+
+                            >
+                                <option value="">Chọn loại cây...</option>
+                                {listType &&
+                                    listType.length > 0 &&
+                                    listType.map((item, index) => {
+                                        return (
+                                            <option key={index} value={item.id}>
+                                                {item.name}
+                                            </option>
+                                        );
+                                    })}
+                            </select>
+                        </div>
+                        <div className="col-12 col-sm-6 form-group">
+                            <label>
+                                Tên cây <span className="text-danger">(*)</span>
+                            </label>
                             <input
                                 className={checkValid.name ? "form-control" : "form-control is-invalid"}
                                 type="text"
@@ -129,7 +197,7 @@ const ModalHandleTypeProduct = (props) => {
                                 onChange={(event) => setName(event.target.value)}
                             />
                         </div>
-                        <div className="col-12 col-sm-6 form-group">
+                        <div className="col-12  form-group mt-3">
                             <label>
                                 Mô tả <span className="text-danger">(*)</span>
                             </label>
@@ -139,7 +207,29 @@ const ModalHandleTypeProduct = (props) => {
 
                             </textarea>
                         </div>
-                        <div className="col-12 col-sm-6 form-group">
+                        <div className="col-12 col-sm-6 form-group mt-3">
+                            <label>
+                                Số lượng <span className="text-danger">(*)</span>
+                            </label>
+                            <input
+                                className={checkValid.quantity ? "form-control" : "form-control is-invalid"}
+                                type="number"
+                                value={quantity}
+                                onChange={(event) => setQuantity(event.target.value)}
+                            />
+                        </div>
+                        <div className="col-12 col-sm-6 form-group mt-3">
+                            <label>
+                                Giá tiền <span className="text-danger">(*)</span>
+                            </label>
+                            <input
+                                className={checkValid.cost ? "form-control" : "form-control is-invalid"}
+                                type="text"
+                                value={cost}
+                                onChange={(event) => setCost(event.target.value)}
+                            />
+                        </div>
+                        <div className="col-12 col-sm-6 form-group mt-3">
                             <label>Ảnh sản phẩm</label>
                             <div className="preview-img-container ">
                                 <input
@@ -178,4 +268,4 @@ const ModalHandleTypeProduct = (props) => {
     );
 }
 
-export default ModalHandleTypeProduct;
+export default ModalHandleProduct;

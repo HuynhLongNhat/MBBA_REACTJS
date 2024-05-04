@@ -1,38 +1,38 @@
 import React, { useEffect, useState } from "react";
-import "./TableTypeProduct.scss";
+import "./TableProduct.scss";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import {
-    fetchAllTypeProducts,
-    deleteTypeProduct,
+    fetchAllProduct,
+    deleteProduct,
 
 } from "../../../../../redux/slices/ProductSlice";
 
-const TableTypeProduct = (props) => {
+const TableProduct = (props) => {
 
 
-    const { handleEditTypeProductFromParent } = props;
+    const { handleEditProductFromParent } = props;
 
 
     const dispatch = useDispatch();
-    const listTypeProduct = useSelector((state) => state.product.listTypeProduct.DT)
+    const listProduct = useSelector((state) => state.product.listProduct)
     const isError = useSelector((state) => state.product.isError)
     const isLoading = useSelector((state) => state.product.isError)
 
 
     useEffect(() => {
-        let res = dispatch(fetchAllTypeProducts());
+        let res = dispatch(fetchAllProduct());
 
-
+        console.log('list product data :', listProduct)
 
     }, [])
 
     const handleEditTypeProduct = (typeProduct) => {
-        handleEditTypeProductFromParent(typeProduct)
+        handleEditProductFromParent(typeProduct)
     };
-    const handleDeleteTypeProduct = (typeProduct) => {
+    const handleDeleteProduct = (product) => {
 
-        let resDelete = dispatch(deleteTypeProduct(typeProduct));
+        let resDelete = dispatch(deleteProduct(product));
 
 
     };
@@ -56,20 +56,26 @@ const TableTypeProduct = (props) => {
                     <tr>
                         <th>STT</th>
                         <th>Loại </th>
+                        <th>Tên</th>
                         <th>Mô tả</th>
+                        <th>Số lượng</th>
+                        <th>Giá</th>
                         <th>Hình ảnh</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {listTypeProduct &&
-                        listTypeProduct.length > 0 &&
-                        listTypeProduct.map((item, index) => {
+                    {listProduct &&
+                        listProduct.length > 0 &&
+                        listProduct.map((item, index) => {
                             return (
                                 <tr key={index}>
                                     <td className="stt">{index + 1}</td>
+                                    <td className="type">{item.typeProductData.name}</td>
                                     <td className="name">{item.name}</td>
-                                    <td className="description-type-product ">{item.description}</td>
+                                    <td className="description">{item.description}</td>
+                                    <td className="quantity">{item.quantity}</td>
+                                    <td className="cost">{item.cost}</td>
                                     <td className="image-type-product">
                                         <div className="image" style={{
                                             backgroundImage: `url(${item.image})`,
@@ -86,7 +92,7 @@ const TableTypeProduct = (props) => {
                                         </button>
                                         <button
                                             className=" btn btn-danger"
-                                            onClick={() => handleDeleteTypeProduct(item)}
+                                            onClick={() => handleDeleteProduct(item)}
                                         >
                                             <i className="fas fa-trash"></i>
                                         </button>
@@ -103,4 +109,4 @@ const TableTypeProduct = (props) => {
 
 
 
-export default TableTypeProduct;
+export default TableProduct;

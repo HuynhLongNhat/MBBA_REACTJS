@@ -1,124 +1,48 @@
 import { useState } from "react";
-import MarkdownIt from "markdown-it";
-import MdEditor from "react-markdown-editor-lite";
 
-
-
-import CommonUtils from ".././../../../../utils/CommonUtils"
 import "./ManageProduct.scss"
+import TableProduct from "./TableProduct";
+
+import ModalHandleProduct from "./ModalHandleProduct";
 const ManageProduct = () => {
-    const [name, setName] = useState('');
-    const [descriptionHTML, setDescriptionHTML] = useState('');
-    const [descriptionMarkdown, setDescriptionMarkdown] = useState('');
-    const [listTypeProduct, setListTypeProduct] = useState([])
-    const [selectedTypeProduct, setSeclectedTypeProduct] = useState('')
-    const [quantity, setQuantity] = useState(0);
-    const [cost, setCost] = useState(0)
-    const [imageBase64, setImageBase64] = useState('')
-    const [image, setImage] = useState('');
+
+    const [isOpenModal, setIsOpenModal] = useState(false)
+    const [action, setAction] = useState('CREATE');
+    const [dataEditProduct, setDataEditProduct] = useState({})
 
 
-    const handleSaveNewProduct = () => {
 
+    const toggleShowModal = () => {
+        setIsOpenModal(!isOpenModal)
     }
-    const handleOnchangeImage = async (event) => {
-        let data = event.target.files;
-        let file = data[0];
-        if (file) {
-            let base64 = await CommonUtils.getBase64(file);
-            let objectUrl = URL.createObjectURL(file);
-            setImageBase64(base64)
-            setImage(objectUrl)
-
-        }
+    const handleEditProductFromParent = (Product) => {
+        setIsOpenModal(!isOpenModal)
+        setAction("UPDATE")
+        console.log("data :", Product)
+        setDataEditProduct(Product)
     }
-
     return (<>
-        <div className="manage-product-container">
-            <div className=" mt-3 ms-title">Quản lí sản phẩm </div>
-
-            <div className="add-new-product row">
-                <div className="col-4 form-group">
-                    <label>Tên sản phẩm</label>
-                    <input
-                        className="form-control"
-                        type="text"
-                        value={name}
-                        onChange={(event) => setName(event.target.value)}
-                    />
-                </div>
-                <div className="col-4 form-group">
-                    <label>Loại sản phẩm </label>
-                    <input
-                        className="form-control"
-                        type="text"
-
-                    />
-                </div>
-
-
-                <div className="col-4 form-group">
-                    <label>Số lượng </label>
-                    <input
-                        className="form-control"
-                        type="text"
-                        value={quantity}
-                        onChange={(event) => setQuantity(event.target.value)}
-                    />
-                </div>
-                <div className="col-4 form-group mt-3">
-                    <label>Giá </label>
-                    <input
-                        className="form-control"
-                        type="text"
-                        value={cost}
-                        onChange={(event) => setCost(event.target.value)}
-                    />
-                </div>
-                <div className="col-4 mt-3">
-                    <label>
-                        Ảnh sản phẩm
-                    </label>
-                    <div className="preview-img-container">
-                        <input
-                            hidden
-                            id="previewImg"
-                            type="file"
-                            // value={image}
-                            onChange={(event) => handleOnchangeImage(event)}
-                        />
-                        <label className="label-upload" htmlFor="previewImg">
-                            Tải ảnh <i className="fa-solid fa-upload"></i>
-                        </label>
-                        <div
-                            className="preview-image"
-                            style={{
-                                backgroundImage: `url(${image})`,
-                            }}
-
-                        ></div>
-                    </div>
-                </div>
-                <div className="col-12 mt-5">
-                    <label>Mô tả</label>
-
-                </div>
-                <div className="col-12">
-                    <button
-                        className="btn-save-product"
-                        onClick={() => handleSaveNewProduct()}
-                    >
-                        Save
-                    </button>
-                    <div className="col-12 mb-5">
-
-                    </div>
-                </div>
+        <div className="manage-product-container container">
+            <div className=" mt-5 ms-title"><h3>Quản lí cây theo loại </h3> </div>
+            <div className="btn btn-primary my-5 mx-3 "
+                onClick={() => {
+                    toggleShowModal();
+                    setAction("CREATE")
+                }} > <i className="fa-solid fa-circle-plus mx-2"></i> Thêm cây mới
             </div>
 
-        </div>
-
-
+            <div className="mb-5">
+                <ModalHandleProduct
+                    show={isOpenModal}
+                    toggleShowModal={toggleShowModal}
+                    action={action}
+                    dataEditProduct={dataEditProduct}
+                />
+                <TableProduct
+                    handleEditProductFromParent={handleEditProductFromParent}
+                />
+            </div>
+        </div >
     </>);
 }
 

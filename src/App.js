@@ -24,7 +24,7 @@ function App() {
           <Route path="/product" element={<div>Product</div>} />
           <Route path="/login" element={<Login></Login>} />
           <Route path="/register" element={<Register></Register>} />
-          <Route path="/manage-products/manage-product" element={<ManageProduct />} />
+          <Route path="/manage-products/product" element={<ManageProduct />} />
           <Route path="/manage-products/type-product" element={<ManageTypeProduct />} />
         </Routes>
       </BrowserRouter>

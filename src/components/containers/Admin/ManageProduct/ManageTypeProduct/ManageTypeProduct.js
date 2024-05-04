@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { CreateNewTypeProduct } from "../../../../../service/userService"
+
 import "./ManageTypeProduct.scss"
 import TableTypeProduct from "./TableTypeProduct";
-import CommonUtils from "./../../../../../utils/CommonUtils"
-import { toast } from "react-toastify";
+
 import ModalHandleTypeProduct from "./ModalHandleTypeProduct";
 const ManageTypeProduct = () => {
 
@@ -23,7 +22,7 @@ const ManageTypeProduct = () => {
     }
     return (<>
         <div className="manage-product-container container">
-            <div className=" mt-3 ms-title">Quản lí loại cây </div>
+            <div className=" mt-5 ms-title"><h3>Quản lí loại cây</h3> </div>
             <div className="btn btn-primary my-5 mx-3 "
                 onClick={() => {
                     toggleShowModal();
