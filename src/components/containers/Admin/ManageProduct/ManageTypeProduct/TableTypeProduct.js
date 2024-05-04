@@ -7,17 +7,18 @@ import {
     deleteTypeProduct,
 
 } from "../../../../../redux/slices/ProductSlice";
-
+import ModalConfirmDeleteTypeProduct from "./ModalConfirmDeleteTypeProduct";
 const TableTypeProduct = (props) => {
 
 
     const { handleEditTypeProductFromParent } = props;
+    const [isShowModalConfirm, setShowModalConfirm] = useState(false)
 
-
+    const [dataTypeProduct, setDataTypeProduct] = useState({})
     const dispatch = useDispatch();
     const listTypeProduct = useSelector((state) => state.product.listTypeProduct.DT)
     const isError = useSelector((state) => state.product.isError)
-    const isLoading = useSelector((state) => state.product.isError)
+    const isLoading = useSelector((state) => state.product.isLoading)
 
 
     useEffect(() => {
@@ -30,9 +31,14 @@ const TableTypeProduct = (props) => {
     const handleEditTypeProduct = (typeProduct) => {
         handleEditTypeProductFromParent(typeProduct)
     };
-    const handleDeleteTypeProduct = (typeProduct) => {
 
-        let resDelete = dispatch(deleteTypeProduct(typeProduct));
+    const toggleShowModalConfirm = () => {
+        setShowModalConfirm(!isShowModalConfirm)
+    }
+    const handleDeleteTypeProduct = (typeProduct) => {
+        toggleShowModalConfirm()
+        setDataTypeProduct(typeProduct)
+
 
 
     };
@@ -87,6 +93,7 @@ const TableTypeProduct = (props) => {
                                         <button
                                             className=" btn btn-danger"
                                             onClick={() => handleDeleteTypeProduct(item)}
+
                                         >
                                             <i className="fas fa-trash"></i>
                                         </button>
@@ -96,6 +103,11 @@ const TableTypeProduct = (props) => {
                         })}
                 </tbody>
             </table>
+            <ModalConfirmDeleteTypeProduct
+                show={isShowModalConfirm}
+                handleClose={toggleShowModalConfirm}
+                dataTypeProduct={dataTypeProduct}
+            />
 
         </div>
     );
