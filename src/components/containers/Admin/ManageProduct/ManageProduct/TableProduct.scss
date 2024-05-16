@@ -33,17 +33,23 @@
     color: white;
 }
 
-.stt {
-    width: 30px;
+.stt_product {
+    width: 70px;
 }
 .type {
     width: 100px;
 }
-.name {
-    width: 150px;
+.name-product {
+    width: 100px;
 }
 .description {
-    width: 40%;
+    width: 30%;
+}
+.quantity-product {
+    width: 150px;
+}
+.cost {
+    width: 100px;
 }
 .image-type-product {
     .image {
@@ -51,5 +57,13 @@
         height: 100px;
         background-size: contain;
         background-repeat: no-repeat;
+    }
+}
+.sort-header {
+    display: flex;
+    justify-content: space-between;
+    i {
+        cursor: pointer;
+        padding: 0 2px;
     }
 }

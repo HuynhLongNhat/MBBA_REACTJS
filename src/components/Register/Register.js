@@ -78,12 +78,12 @@ const Register = () => {
                 password
             })
 
-            if (serverData.data.EC === 0) {
-                toast.success(serverData.data.EM);
+            if (serverData.EC === 0) {
+                toast.success(serverData.EM);
                 navigate('/login')
             }
             else {
-                toast.error(serverData.data.EM)
+                toast.error(serverData.EM)
             }
         }
     }

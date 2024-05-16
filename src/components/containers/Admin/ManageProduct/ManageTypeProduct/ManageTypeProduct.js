@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import "./ManageTypeProduct.scss"
+
 import TableTypeProduct from "./TableTypeProduct";
 
 import ModalHandleTypeProduct from "./ModalHandleTypeProduct";

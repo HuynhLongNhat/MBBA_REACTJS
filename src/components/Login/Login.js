@@ -3,9 +3,12 @@ import { useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { toast } from "react-toastify";
-import { LoginUser } from "../../service/userService"
+import { handleLoginUser } from "../../redux/slices/UserSlice";
+import { useDispatch, useSelector } from "react-redux";
 const Login = () => {
-
+    const dispatch = useDispatch()
+    const isLoading = useSelector((state) => state.user.isLoading);
+    const user = useSelector((state) => state.user.user)
     let navigate = useNavigate()
     const navigateRegister = () => {
         navigate('/register')
@@ -32,22 +35,26 @@ const Login = () => {
         }
         return true;
     };
+
+    useEffect(() => {
+        if (user && user.auth === true) {
+            navigate('/')
+        }
+    }, [user])
     const handleLogin = async () => {
         let check = checkInvalidInput();
         if (check === true) {
-            let res = await LoginUser({
+            let res = dispatch(handleLoginUser({
                 valueLogin,
                 password
-            })
-            if (res && res.data.EC === 0) {
-                toast.success(res.data.EM);
+            }))
+            if (res) {
                 navigate('/')
-            } if (res && res.data.EC !== 0) {
-                toast.error(res.data.EM);
             }
         }
-        console.log("data", valueLogin, password)
+
     }
+
     const handlePressEnter = (event) => {
         if (event.charCode === 13 && event.code === "Enter") {
             handleLogin();

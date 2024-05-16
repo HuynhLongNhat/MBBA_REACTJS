@@ -4,28 +4,28 @@
     box-sizing: border-box;
 }
 
-#TableTypeProduct {
+#TableUser {
     font-family: Arial, Helvetica, sans-serif;
     border-collapse: collapse;
     width: 100%;
     text-align: center;
 }
 
-#TableTypeProduct td,
-#TableTypeProduct th {
+#TableUser td,
+#TableUser th {
     border: 1px solid #ddd;
     padding: 8px;
 }
 
-#TableTypeProduct tr:nth-child(even) {
+#TableUser tr:nth-child(even) {
     background-color: #f2f2f2;
 }
 
-#TableTypeProduct tr:hover {
+#TableUser tr:hover {
     background-color: #ddd;
 }
 
-#TableTypeProduct th {
+#TableUser th {
     padding-top: 12px;
     padding-bottom: 12px;
     text-align: left;
@@ -33,14 +33,17 @@
     color: white;
 }
 
-.stt {
+.stt-user {
+    width: 50px;
+}
+.id {
     width: 100px;
 }
 .name {
-    width: 150px;
+    width: 200px;
 }
-.description-type-product {
-    width: 50%;
+.description-user {
+    width: 59%;
 }
 .image-type-product {
     .image {

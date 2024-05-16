@@ -5,11 +5,24 @@ import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Nav from 'react-bootstrap/Nav';
-
+import { useDispatch, useSelector } from "react-redux";
+import { LogOutUser } from "../redux/slices/UserSlice"
+import { toast } from "react-toastify";
 const NavHeader = () => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate()
+    const user = useSelector((state) => state.user.user)
     const [closeHideCart, setCloseHideCart] = useState(false);
     const handleShowHideCart = () => {
         setCloseHideCart(!closeHideCart)
+    }
+
+    const handleLogOutUser = () => {
+        dispatch(LogOutUser())
+        toast.success("Tài khoản đăng xuất thành công !")
+    }
+    const handleLoginUser = () => {
+        navigate('/login')
     }
     return (
         <div className="nav-header-container">
@@ -32,12 +45,24 @@ const NavHeader = () => {
                             <Nav>
 
                                 <>
-                                    <Nav.Item className="nav-link">Chào mừng Long Nhat</Nav.Item>
+                                    <Nav.Item className="nav-link">
+                                        {user && user.username ? `  Chào mừng ${user.username}` : ""}
+
+
+                                    </Nav.Item>
                                     <NavDropdown title="Tài khoản" id="basic-nav-dropdown">
                                         <NavDropdown.Item >Thông tin cá nhân</NavDropdown.Item>
                                         <NavDropdown.Item >Đổi mật khẩu</NavDropdown.Item>
                                         <NavDropdown.Divider />
-                                        <NavDropdown.Item><span>Đăng xuất</span></NavDropdown.Item>
+                                        {user && user.auth === true ?
+
+                                            (
+                                                <NavDropdown.Item><span onClick={() => handleLogOutUser()}>Đăng xuất</span></NavDropdown.Item>
+                                            ) : (
+                                                <NavDropdown.Item><span onClick={() => handleLoginUser()}>Đăng nhập</span></NavDropdown.Item>
+                                            )}
+
+
                                     </NavDropdown>
                                 </>
                             </Nav>

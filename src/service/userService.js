@@ -7,6 +7,24 @@ const LoginUser = (data) => {
     return axios.post("/login", data);
 };
 
+const CreateNewUserUser = (data) => {
+    return axios.post("/user/create", data)
+}
+const DeleteAUser = (userData) => {
+    return axios.delete("/user/delete", {
+        data: {
+            id: userData.id
+        }
+    })
+}
+
+const GetAllUser = () => {
+    return axios.get('/user/read')
+}
+
+const UpdateUser = (userData) => {
+    return axios.put('/user/update', { userData })
+}
 const CreateNewTypeProduct = (TypeProduct) => {
     return axios.post('/manage-products/create-type-product', TypeProduct)
 }
@@ -55,9 +73,14 @@ const updateProduct = (product) => {
     return axios.put("/manage-products/update-product", { ...product })
 }
 
+const getAllGroup = () => {
+    return axios.get("/group/read")
+}
+
 export {
     registerNewUser,
     LoginUser,
+    GetAllUser,
     CreateNewTypeProduct,
     GetAllTypeProduct,
     DeleteTypeProduct,
@@ -66,5 +89,10 @@ export {
     CreateNewProduct,
     getAllProduct,
     DeleteProduct,
-    updateProduct
+    updateProduct,
+    CreateNewUserUser,
+    getAllGroup,
+    DeleteAUser,
+    UpdateUser
+
 }

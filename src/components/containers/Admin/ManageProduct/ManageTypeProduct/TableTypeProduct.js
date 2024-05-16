@@ -8,6 +8,8 @@ import {
 
 } from "../../../../../redux/slices/ProductSlice";
 import ModalConfirmDeleteTypeProduct from "./ModalConfirmDeleteTypeProduct";
+import _ from "lodash"
+import { debounce } from "lodash"
 const TableTypeProduct = (props) => {
 
 
@@ -17,16 +19,26 @@ const TableTypeProduct = (props) => {
     const [dataTypeProduct, setDataTypeProduct] = useState({})
     const dispatch = useDispatch();
     const listTypeProduct = useSelector((state) => state.product.listTypeProduct.DT)
+    const [_listTypeProduct, _setListTypeProduct] = useState({})
     const isError = useSelector((state) => state.product.isError)
     const isLoading = useSelector((state) => state.product.isLoading)
+    const [hasFetched, setHasFetched] = useState(false);
 
+    const [sortBy, setSortBy] = useState('asc');
+    const [sortField, setSortField] = useState('id')
 
     useEffect(() => {
         let res = dispatch(fetchAllTypeProducts());
-
-
-
     }, [])
+
+    useEffect(() => {
+        if (!hasFetched) {
+            dispatch(fetchAllTypeProducts());
+            setHasFetched(true);
+        }
+        _setListTypeProduct(listTypeProduct);
+
+    }, [listTypeProduct, hasFetched]);
 
     const handleEditTypeProduct = (typeProduct) => {
         handleEditTypeProductFromParent(typeProduct)
@@ -43,6 +55,26 @@ const TableTypeProduct = (props) => {
 
     };
 
+    const handleSearch = debounce((event) => {
+        let term = event.target.value;
+        if (term) {
+            let cloneListProduct = _.cloneDeep(_listTypeProduct);
+            cloneListProduct = cloneListProduct.filter(item => item.name.toLowerCase().includes(term.toLowerCase()))
+            _setListTypeProduct(cloneListProduct)
+        } else {
+            dispatch(fetchAllTypeProducts())
+        }
+    }, 500)
+
+    const handleSort = (sortBy, sortField) => {
+        setSortBy(sortBy);
+        setSortField(sortField);
+        let cloneListProduct = _.cloneDeep(_listTypeProduct);
+        cloneListProduct = _.orderBy(cloneListProduct, [sortField], [sortBy])
+        _setListTypeProduct(cloneListProduct)
+
+    }
+
     if (isError === true && isLoading === false) {
         return (<>
             <div> Đã có lỗi ! Vui lòng thử lại !</div>
@@ -56,26 +88,63 @@ const TableTypeProduct = (props) => {
 
     return (
         <div className="container">
-
+            <div className='col-12 col-sm-4 my-3'>
+                <input className='form-control' placeholder='Tìm kiếm theo loại...'
+                    onChange={(event) => handleSearch(event)}
+                ></input>
+            </div>
             <table id="TableTypeProduct">
                 <thead>
                     <tr>
                         <th>STT</th>
-                        <th>Loại </th>
+                        <th>
+
+
+                            <div className='sort-header'>
+                                <span>ID</span>
+                                <span>
+                                    <i className="fa-solid fa-arrow-down-long"
+                                        onClick={() =>
+                                            handleSort('desc', 'id')
+                                        }
+                                    ></i>
+                                    <i className="fa-solid fa-arrow-up-long"
+                                        onClick={() => handleSort('asc', 'id')
+                                        }
+                                    ></i></span>
+                            </div>
+                        </th>
+
+                        <th>
+                            <div className='sort-header'>
+                                <span>Loại</span>
+                                <span>
+                                    <i className="fa-solid fa-arrow-down-long"
+                                        onClick={() =>
+                                            handleSort('desc', 'name')
+                                        }
+                                    ></i>
+                                    <i className="fa-solid fa-arrow-up-long"
+                                        onClick={() => handleSort('asc', 'name')
+                                        }
+                                    ></i></span>
+                            </div>
+                        </th>
                         <th>Mô tả</th>
                         <th>Hình ảnh</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {listTypeProduct &&
-                        listTypeProduct.length > 0 &&
-                        listTypeProduct.map((item, index) => {
+                    {_listTypeProduct &&
+                        _listTypeProduct.length > 0 &&
+                        _listTypeProduct.map((item, index) => {
                             return (
                                 <tr key={index}>
-                                    <td className="stt">{index + 1}</td>
+                                    <td className="">{index + 1}</td>
+                                    <td className="stt">{item.id}</td>
                                     <td className="name">{item.name}</td>
-                                    <td className="description-type-product ">{item.description}</td>
+                                    <td className="description-type-product">{item.description}</td>
                                     <td className="image-type-product">
                                         <div className="image" style={{
                                             backgroundImage: `url(${item.image})`,

@@ -15,7 +15,6 @@ import { toast } from "react-toastify";
 export const fetchAllTypeProducts = createAsyncThunk(
     "type-products/fetchAllTypeProducts",
     async () => {
-
         const res = await GetAllTypeProduct()
         return res;
     }
@@ -76,7 +75,6 @@ export const fetchAllProduct = createAsyncThunk(
     "product/getAllProduct",
     async () => {
         let res = await getAllProduct();
-        console.log("res data", res)
         return res.DT
     }
 )
