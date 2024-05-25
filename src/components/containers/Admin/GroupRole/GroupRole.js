@@ -24,7 +24,7 @@ const GroupRole = () => {
 
     const getAllRole = async () => {
         let data = await dispatch(FetchAllRoles());;
-        console.log('data :', data)
+
         if (data && data.payload) {
             setListRoles(data.payload)
 
@@ -90,7 +90,7 @@ const GroupRole = () => {
     }
     const handleSave = () => {
         let data = buildDataToSave();
-        console.log('check data send', data)
+
         let res = dispatch(AssignRoleToGroup(data));
         if (res) {
             toast.success(res.EM)

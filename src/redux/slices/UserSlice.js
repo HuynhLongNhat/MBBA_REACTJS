@@ -158,7 +158,7 @@ export const ProductSlide = createSlice({
                 };
             })
             .addCase(handleLoginUser.fulfilled, (state, { payload }) => {
-                console.log("data user", payload.DT)
+
                 return {
                     ...state,
                     user: {

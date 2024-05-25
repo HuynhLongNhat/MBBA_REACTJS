@@ -9,13 +9,14 @@ import ModalConfirm from "./ModalConfirm";
 import ModalEditRole from "./ModalEditRole";
 const TableRole = forwardRef((props, ref) => {
     const dispatch = useDispatch();
-    const listRoles = useSelector((state) => state.role.listRoles)
+    const [listRoles, setListRoles] = useState([])
     const [isShowModalConfirm, setShowModalConfirm] = useState(false)
     const [isShowModalEdit, setShowModalEdit] = useState(false)
     const [dataRole, setDataRole] = useState({})
     useEffect(() => {
         getAllRole()
     }, [])
+
 
     useImperativeHandle(ref, () => ({
         fetchListRolesAgain() {
@@ -44,11 +45,15 @@ const TableRole = forwardRef((props, ref) => {
     };
 
 
-    const getAllRole = () => {
-        let data = dispatch(FetchAllRoles());
+    const getAllRole = async () => {
+        let data = await dispatch(FetchAllRoles());;
+
+        if (data && data.payload) {
+            setListRoles(data.payload)
+
+        }
 
     }
-
     return (<>
 
         <table className="table table-bordered table-hover">
