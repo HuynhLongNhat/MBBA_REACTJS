@@ -37,7 +37,7 @@ const GroupRole = () => {
         if (value) {
             try {
                 let data = await dispatch(FetchRoleByGroup(value));
-                console.log('data :', data)
+
                 let result = buildDataRoleByGroup(data.payload, listRoles);
                 setAssignRoleByGroup(result);
             } catch (error) {
