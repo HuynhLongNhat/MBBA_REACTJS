@@ -1,3 +1,4 @@
+import Cookies from 'js-cookie';
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
     LoginUser,
@@ -6,7 +7,7 @@ import {
     getAllGroup,
     CreateNewUserUser,
     DeleteAUser,
-    UpdateUser
+    UpdateUser,
 } from "../../service/userService"
 import { toast } from "react-toastify";
 
@@ -125,6 +126,7 @@ export const updateUser = createAsyncThunk(
 )
 const initialState = {
     user: {
+        groupWithRoles: '',
         email: '',
         username: '',
         auth: null,
@@ -156,14 +158,15 @@ export const ProductSlide = createSlice({
                 };
             })
             .addCase(handleLoginUser.fulfilled, (state, { payload }) => {
-                console.log("data", payload)
+                console.log("data user", payload.DT)
                 return {
                     ...state,
                     user: {
                         email: payload.DT.email,
                         token: payload.DT.access_token,
                         username: payload.DT.username,
-                        auth: true
+                        auth: true,
+                        groupWithRoles: payload.DT.groupWithRoles,
                     },
                     isLoading: false,
                     isError: false,
@@ -199,6 +202,8 @@ export const ProductSlide = createSlice({
                 localStorage.removeItem('token')
                 localStorage.removeItem('email')
                 localStorage.removeItem('username')
+                Cookies.remove('token');
+
                 return {
                     ...state,
                     user: {
@@ -221,7 +226,7 @@ export const ProductSlide = createSlice({
                 };
             })
             .addCase(FetchAllUser.fulfilled, (state, { payload }) => {
-                console.log('data user', payload.DT)
+
                 return {
                     ...state,
                     ListUser: payload.DT,

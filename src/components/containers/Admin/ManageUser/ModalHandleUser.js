@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { toast } from "react-toastify";
-
+import "./ModalHandleUser.scss"
 import { FetchAllGroup } from "../../../../redux/slices/UserSlice"
 import _ from "lodash";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,8 +22,8 @@ function ModalHandleUser(props) {
     const [password, setPassword] = useState('')
     const [address, setAddress] = useState('')
     const [gender, setGender] = useState(listGender[0])
-    const [group, setGroup] = useState('')
-
+    const [group, setGroup] = useState()
+    const [isShowPassword, setIsShowPassword] = useState(false)
 
     const defaultValidInput = {
         email: true,
@@ -35,12 +35,12 @@ function ModalHandleUser(props) {
         gender: true,
         group: true
     }
-    const [validInputs, setCheckValid] = useState(defaultValidInput)
+    const [checkValid, setCheckValid] = useState(defaultValidInput)
 
     useEffect(() => {
         dispatch(FetchAllGroup())
 
-        console.log('data :', dataEditUser)
+        console.log('data :', ListGroup)
 
     }, [])
     useEffect(() => {
@@ -51,24 +51,25 @@ function ModalHandleUser(props) {
             setUsername(dataEditUser.username);
             setAddress(dataEditUser.address);
             setGender(dataEditUser.gender);
-            setGroup(dataEditUser.group)
+            setGroup(dataEditUser.groupId)
 
 
         }
     }, [dataEditUser])
     useEffect(() => {
         if (action === "CREATE") {
-            setEmail(" ");
-            setName(" ");
-            setPhone(" ");
-            setPassword('')
-            setUsername(" ")
-            setAddress(" ");
+            setEmail(null);
+            setName(null);
+            setPhone(null);
+            setPassword(null)
+            setUsername(null)
+            setAddress(null);
             setGender(listGender[0]);
-            setGroup(" ")
+            setGroup(null)
 
         }
     }, [action])
+
     const checkInvalidInput = () => {
         setCheckValid(defaultValidInput)
         if (!email) {
@@ -91,7 +92,7 @@ function ModalHandleUser(props) {
             setCheckValid({ ...defaultValidInput, username: false });
             return false;
         }
-        if (!password) {
+        if (action !== "UPDATE" && !password) {
             toast.error('Vui lòng nhập mật khẩu!');
             setCheckValid({ ...defaultValidInput, password: false });
             return false;
@@ -115,21 +116,9 @@ function ModalHandleUser(props) {
     }
     const handleConfirmUser = async () => {
 
-        // let check = checkInvalidInput();
-        // if (check === true) {
-        let res = action === "CREATE" ? dispatch(createNewUser({
-            email: email,
-            phone: phone,
-            name: name,
-            username: username,
-            password: password,
-            address: address,
-            gender: gender,
-            groupId: group
-
-        }))
-            : dispatch(updateUser({
-                id: dataEditUser.id,
+        let check = checkInvalidInput();
+        if (check === true) {
+            let res = action === "CREATE" ? dispatch(createNewUser({
                 email: email,
                 phone: phone,
                 name: name,
@@ -138,20 +127,33 @@ function ModalHandleUser(props) {
                 address: address,
                 gender: gender,
                 groupId: group
+
             }))
+                : dispatch(updateUser({
+                    id: dataEditUser.id,
+                    email: email,
+                    phone: phone,
+                    name: name,
+                    username: username,
+                    password: password,
+                    address: address,
+                    gender: gender,
+                    groupId: group
+                }))
 
-        if (res) {
-            toggleShowModal()
-            setEmail(" ");
-            setPhone(" ");
-            setPassword('')
-            setUsername(" ")
-            setAddress(" ");
-            setGender(listGender[0]);
-            setGroup(" ")
+            if (res) {
+                toggleShowModal()
+                setName('')
+                setEmail(" ");
+                setPhone(" ");
+                setPassword('')
+                setUsername(" ")
+                setAddress(" ");
+                setGender(listGender[0]);
+                setGroup(" ")
 
+            }
         }
-
     }
 
 
@@ -172,7 +174,7 @@ function ModalHandleUser(props) {
                             <input
                                 disabled={action === "CREATE" ? false : true}
                                 className={
-                                    validInputs.email ? "form-control" : "form-control is-invalid"
+                                    checkValid.email ? "form-control" : "form-control is-invalid"
                                 }
                                 type="email"
                                 value={email}
@@ -188,7 +190,7 @@ function ModalHandleUser(props) {
                             <input
                                 disabled={action === "CREATE" ? false : true}
                                 className={
-                                    validInputs.phone ? "form-control" : "form-control is-invalid"
+                                    checkValid.phone ? "form-control" : "form-control is-invalid"
                                 }
                                 type="text"
                                 value={phone}
@@ -202,7 +204,7 @@ function ModalHandleUser(props) {
                             <input
 
                                 className={
-                                    validInputs.name ? "form-control" : "form-control is-invalid"
+                                    checkValid.name ? "form-control" : "form-control is-invalid"
                                 }
                                 type="text"
                                 value={name}
@@ -213,7 +215,7 @@ function ModalHandleUser(props) {
                             <label>Tên đăng nhập</label>
                             <input
                                 className={
-                                    validInputs.username
+                                    checkValid.username
                                         ? "form-control"
                                         : "form-control is-invalid"
                                 }
@@ -222,7 +224,7 @@ function ModalHandleUser(props) {
                                 onChange={(event) => setUsername(event.target.value)}
                             ></input>
                         </div>
-                        <div className="col-12 col-sm-6 form-group">
+                        <div className="col-12 col-sm-6 form-group input-password">
                             {action === "CREATE" && (
                                 <>
                                     <label>
@@ -230,14 +232,15 @@ function ModalHandleUser(props) {
                                     </label>
                                     <input
                                         className={
-                                            validInputs.password
+                                            checkValid.password
                                                 ? "form-control"
                                                 : "form-control is-invalid"
                                         }
-                                        type="password"
+                                        type={isShowPassword ? "text" : "password"}
                                         value={password}
                                         onChange={(event) => setPassword(event.target.value)}
                                     ></input>
+                                    <i onClick={() => setIsShowPassword(!isShowPassword)} className={isShowPassword ? "fa-solid fa-eye" : "fa-solid fa-eye-slash"}></i>
                                 </>
                             )}
                         </div>
@@ -245,7 +248,7 @@ function ModalHandleUser(props) {
                             <label>Địa chỉ</label>
                             <input
                                 className={
-                                    validInputs.address
+                                    checkValid.address
                                         ? "form-control"
                                         : "form-control is-invalid"
                                 }
@@ -258,7 +261,7 @@ function ModalHandleUser(props) {
                             <label>Giới tính</label>
                             <select
                                 className={
-                                    validInputs.gender ? "form-select" : "form-select is-invalid"
+                                    checkValid.gender ? "form-select" : "form-select is-invalid"
                                 }
                                 onChange={(event) => setGender(event.target.value)}
                                 value={gender}
@@ -280,7 +283,7 @@ function ModalHandleUser(props) {
                             </label>
                             <select
                                 className={
-                                    validInputs.group ? "form-select" : "form-select is-invalid"
+                                    checkValid.group ? "form-select" : "form-select is-invalid"
                                 }
                                 onChange={(event) => setGroup(event.target.value)}
                                 value={group}

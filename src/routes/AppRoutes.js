@@ -7,6 +7,8 @@ import { Routes, Route } from "react-router-dom"
 import NotFound from "./NotFound";
 import PrivateRoutes from "./PrivateRoutes";
 import ManageUser from "../components/containers/Admin/ManageUser/ManageUser";
+import Role from "../components/containers/Admin/Role/Role";
+import GroupRole from "../components/containers/Admin/GroupRole/GroupRole";
 const AppRoutes = () => {
     return (<>
         <Routes>
@@ -34,6 +36,17 @@ const AppRoutes = () => {
             <Route path="/manage-user" element={
                 <PrivateRoutes>
                     <ManageUser />
+                </PrivateRoutes>
+            }></Route>
+
+            <Route path="/roles" element={
+                <PrivateRoutes>
+                    <Role />
+                </PrivateRoutes>
+            }></Route>
+            <Route path="/group-roles" element={
+                <PrivateRoutes>
+                    <GroupRole />
                 </PrivateRoutes>
             }></Route>
 

@@ -25,6 +25,7 @@ const TableUser = (props) => {
 
     useEffect(() => {
         let res = dispatch(FetchAllUser());
+
     }, [])
 
     useEffect(() => {
@@ -33,7 +34,7 @@ const TableUser = (props) => {
             setHasFetched(true);
         }
         _setListUser(listUser);
-
+        console.log('list user:', _listUser)
 
     }, [listUser, hasFetched]);
 
@@ -47,8 +48,6 @@ const TableUser = (props) => {
     const handleDeleteTypeProduct = (user) => {
         toggleShowModalConfirm()
         setDataUser(user)
-
-
 
     };
 
@@ -192,7 +191,7 @@ const TableUser = (props) => {
                                         {item.phone}
                                     </td >
                                     <td className="group">
-                                        {/* {item.group.name} */}
+                                        {item.groupId}
                                     </td >
                                     <td>
                                         <button

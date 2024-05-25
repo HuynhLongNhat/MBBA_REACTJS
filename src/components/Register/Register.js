@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { registerNewUser } from "../../service/userService"
 import { toast } from "react-toastify";
+import "./Register.scss"
 const Register = () => {
     let navigate = useNavigate();
     const [name, setName] = useState('');
@@ -10,7 +11,8 @@ const Register = () => {
     const [userName, setUserName] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('')
-
+    const [isShowPassword, setIsShowPassword] = useState(false)
+    const [isShowRePassword, setIsShowRePassword] = useState(false)
     // mặc định cho các trường có validate là true
     const defaultValidInput = {
         isValidName: true,
@@ -158,10 +160,10 @@ const Register = () => {
 
                             />
                         </div>
-                        <div className="form-group">
+                        <div className="form-group input-password">
                             <label className="">Mật khẩu <span className="text-danger">(*)</span></label>
                             <input
-                                type="password"
+                                type={isShowPassword ? "text" : "password"}
                                 className={
                                     objCheckInput.isValidPassword
                                         ? "form-control"
@@ -171,11 +173,12 @@ const Register = () => {
                                 onChange={(event) => setPassword(event.target.value)}
 
                             />
+                            <i onClick={() => setIsShowPassword(!isShowPassword)} className={isShowPassword ? "fa-solid fa-eye" : "fa-solid fa-eye-slash"}></i>
                         </div>
-                        <div className="form-group">
+                        <div className="form-group input-password">
                             <label className="">Nhập lại mật khẩu <span className="text-danger">(*)</span></label>
                             <input
-                                type="password"
+                                type={isShowRePassword ? "text" : "password"}
                                 className={
                                     objCheckInput.isValidConfirmPassword
                                         ? "form-control"
@@ -184,6 +187,7 @@ const Register = () => {
                                 value={confirmPassword}
                                 onChange={(event) => setConfirmPassword(event.target.value)}
                             />
+                            <i onClick={() => setIsShowRePassword(!isShowRePassword)} className={isShowRePassword ? "fa-solid fa-eye" : "fa-solid fa-eye-slash"}></i>
                         </div>
                         <button className="btn btn-primary" onClick={() => handleRegister()}
                             onKeyDown={(event) => handlePressEnter(event)}

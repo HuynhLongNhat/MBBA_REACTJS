@@ -1,4 +1,4 @@
-import axios from "./axios";
+import axios from "../setup/axios";
 
 const registerNewUser = (data) => {
     return axios.post("/register", data);
@@ -23,8 +23,11 @@ const GetAllUser = () => {
 }
 
 const UpdateUser = (userData) => {
-    return axios.put('/user/update', { userData })
+    return axios.put('/user/update', { ...userData })
 }
+
+
+
 const CreateNewTypeProduct = (TypeProduct) => {
     return axios.post('/manage-products/create-type-product', TypeProduct)
 }
@@ -93,6 +96,7 @@ export {
     CreateNewUserUser,
     getAllGroup,
     DeleteAUser,
-    UpdateUser
+    UpdateUser,
+
 
 }

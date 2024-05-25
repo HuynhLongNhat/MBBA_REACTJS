@@ -5,8 +5,10 @@ import Modal from "react-bootstrap/Modal";
 import { toast } from "react-toastify";
 import { handleLoginUser } from "../../redux/slices/UserSlice";
 import { useDispatch, useSelector } from "react-redux";
+import "./Login.scss"
 const Login = () => {
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
+    const [isShowPassword, setIsShowPassword] = useState(false)
     const isLoading = useSelector((state) => state.user.isLoading);
     const user = useSelector((state) => state.user.user)
     let navigate = useNavigate()
@@ -75,22 +77,27 @@ const Login = () => {
                             <label className="">Email hoặc số điện thoại <span className="text-danger">(*)</span></label>
                             <input
                                 type="text"
-                                className=
-                                "form-control"
+                                className={
+                                    objCheckInput.isValidValueLogin ? "form-control" : "form-control is-invalid"
+                                }
                                 value={valueLogin}
                                 onChange={(event) => setValueLogin(event.target.value)}
                             />
                         </div>
-                        <div className="form-group">
+                        <div className="form-group input-password">
                             <label className="">Mật khẩu<span className="text-danger">(*)</span></label>
                             <input
-                                type="password"
-                                className=
-                                "form-control"
+
+                                type={isShowPassword ? "text" : "password"}
+                                className={
+                                    objCheckInput.isValidPassWord ? "form-control" : "form-control is-invalid"
+                                }
+
                                 value={password}
                                 onChange={(event) => setPassword(event.target.value)}
 
                             />
+                            <i onClick={() => setIsShowPassword(!isShowPassword)} className={isShowPassword ? "fa-solid fa-eye" : "fa-solid fa-eye-slash"}></i>
                         </div>
                         <button className="btn btn-primary" onClick={() => handleLogin()}
                             onKeyDown={(event) => handlePressEnter(event)}
