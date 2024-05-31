@@ -18,7 +18,8 @@ export const handleLoginUser = createAsyncThunk(
 
         localStorage.setItem('token', res.DT.access_token);
         localStorage.setItem("email", res.DT.email)
-        localStorage.setItem("username", res.DT.username)
+        localStorage.setItem("username", res.DT.username);
+        localStorage.setItem("groupWithRoles", res.DT.groupWithRoles.name);
         if (res && res.EC === 0) {
             toast.success(res.EM)
         }
@@ -132,6 +133,7 @@ const initialState = {
         auth: null,
         token: ''
     },
+    isLogin: false,
     isLoading: false,
     isError: false,
     ListUser: [],
@@ -140,7 +142,7 @@ const initialState = {
 }
 
 
-export const ProductSlide = createSlice({
+export const UserSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {},
@@ -152,6 +154,7 @@ export const ProductSlide = createSlice({
                     user: {
                         auth: false
                     },
+                    isLogin: false,
                     isLoading: true,
                     isError: false
 
@@ -168,6 +171,7 @@ export const ProductSlide = createSlice({
                         auth: true,
                         groupWithRoles: payload.DT.groupWithRoles,
                     },
+                    isLogin: true,
                     isLoading: false,
                     isError: false,
 
@@ -180,6 +184,7 @@ export const ProductSlide = createSlice({
                         auth: false
                     }
                     ,
+                    isLogin: false,
                     isLoading: false,
                     isError: true
                 };
@@ -192,8 +197,10 @@ export const ProductSlide = createSlice({
                         email: localStorage.getItem('email'),
                         token: localStorage.getItem('token'),
                         username: localStorage.getItem('username'),
+                        groupWithRoles: localStorage.getItem('groupWithRoles'),
                         auth: true
                     },
+                    isLogin: true,
                     isLoading: false,
                     isError: false,
                 };
@@ -202,6 +209,7 @@ export const ProductSlide = createSlice({
                 localStorage.removeItem('token')
                 localStorage.removeItem('email')
                 localStorage.removeItem('username')
+                localStorage.removeItem('groupWithRoles')
                 Cookies.remove('token');
 
                 return {
@@ -211,6 +219,7 @@ export const ProductSlide = createSlice({
                         token: '',
                         auth: false
                     },
+                    isLogin: false,
                     isLoading: false,
                     isError: false,
                 };
@@ -272,4 +281,4 @@ export const ProductSlide = createSlice({
     },
 })
 
-export default ProductSlide.reducer
+export default UserSlice.reducer

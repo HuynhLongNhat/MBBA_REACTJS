@@ -1,0 +1,11 @@
+.header-container {
+    .header-tabs-container {
+        z-index: 99;
+        display: flex;
+        justify-content: space-between;
+        background-color: greenyellow;
+        color: black;
+        height: 40px;
+        position: relative;
+    }
+}

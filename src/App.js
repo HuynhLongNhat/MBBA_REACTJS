@@ -10,11 +10,13 @@ import "react-markdown-editor-lite/lib/index.css";
 import { ToastContainer } from "react-toastify";
 import { handleRefresh } from "./redux/slices/UserSlice"
 import AppRoutes from './routes/AppRoutes';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-
+import Header from './components/containers/Header/Header';
+// import 'antd/dist/antd.scss';
 function App() {
   const dispatch = useDispatch();
+  const isLogin = useSelector((state) => state.user.isLogin)
   useEffect(() => {
     if (localStorage.getItem('token')) {
       dispatch(handleRefresh())
@@ -24,6 +26,8 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <NavHeader />
+        {isLogin && <Header />}
+
         <AppRoutes />
       </BrowserRouter>
 
