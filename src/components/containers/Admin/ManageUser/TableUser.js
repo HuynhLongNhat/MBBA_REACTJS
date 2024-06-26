@@ -123,21 +123,7 @@ const TableUser = (props) => {
                                     ></i></span>
                             </div>
                         </th>
-                        <th>
-                            <div className='sort-header'>
-                                <span>Tên đăng nhập</span>
-                                <span>
-                                    <i className="fa-solid fa-arrow-down-long"
-                                        onClick={() =>
-                                            handleSort('desc', 'username')
-                                        }
-                                    ></i>
-                                    <i className="fa-solid fa-arrow-up-long"
-                                        onClick={() => handleSort('asc', 'username')
-                                        }
-                                    ></i></span>
-                            </div>
-                        </th>
+
                         <th>
                             <div className='sort-header'>
                                 <span>Email</span>
@@ -162,11 +148,11 @@ const TableUser = (props) => {
                                 <span>
                                     <i className="fa-solid fa-arrow-down-long"
                                         onClick={() =>
-                                            handleSort('desc', 'username')
+                                            handleSort('desc', 'phone')
                                         }
                                     ></i>
                                     <i className="fa-solid fa-arrow-up-long"
-                                        onClick={() => handleSort('asc', 'username')
+                                        onClick={() => handleSort('asc', 'phone')
                                         }
                                     ></i></span>
                             </div>
@@ -184,7 +170,7 @@ const TableUser = (props) => {
                                     <td className="stt-user">{index + 1}</td>
                                     <td className="id">{item.id}</td>
                                     <td className="name">{item.name}</td>
-                                    <td className="username">{item.username}</td>
+
                                     <td className="email">{item.email}</td>
                                     <td className="gender">{item.gender}</td>
                                     <td className="phone">

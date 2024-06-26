@@ -3,97 +3,75 @@ import { useNavigate } from "react-router-dom";
 import { registerNewUser } from "../../service/userService"
 import { toast } from "react-toastify";
 import "./Register.scss"
+import { useFormik } from "formik";
+import * as Yup from "yup"
 const Register = () => {
     let navigate = useNavigate();
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [phone, setPhone] = useState('');
-    const [userName, setUserName] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('')
+
     const [isShowPassword, setIsShowPassword] = useState(false)
     const [isShowRePassword, setIsShowRePassword] = useState(false)
-    // mặc định cho các trường có validate là true
-    const defaultValidInput = {
-        isValidName: true,
-        isValidEmail: true,
-        isValidPhone: true,
-        isValidUsername: true,
-        isValidPassword: true,
-        isValidConfirmPassword: true,
-    }
-    const [objCheckInput, setObjCheckInput] = useState(defaultValidInput)
+
+    const formik = useFormik({
+        initialValues: {
+            name: "",
+            email: "",
+            phone: "",
+            password: "",
+            confirmedPassword: "",
+        },
+        validationSchema: Yup.object({
+            name: Yup.string()
+                .required("Vui lòng nhập đầy đủ họ tên!")
+                .min(4, "Độ dài tên phải lớn hơn 4 ký tự!"),
+
+            email: Yup.string()
+                .required("Vui lòng nhập email!")
+                .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, "Vui lòng nhập email hợp lệ!"),
+            password: Yup.string()
+                .required("Vui lòng nhập mật khẩu!")
+                .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                    "Mật khẩu của bạn phải tối thiểu 8 ký tự, có ít nhất 1 chữ hoa, 1 chữ thường, một số và một ký tự đặc biệt!"),
+
+            phone: Yup.string()
+                .required("Vui lòng nhập số điện thoại!")
+                .matches(/\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/, "Vui lòng nhập số điện thoại hợp lệ"),
+            confirmedPassword: Yup.string()
+                .required("Vui lòng nhập lại mật khẩu!")
+                .oneOf([Yup.ref('password'), null], "Mật khẩu nhập lại không trùng khớp!"),
+        }),
+        onSubmit: (values) => {
+            handleRegister(values)
+        }
+    })
+
+
     const navigateLogin = () => {
         navigate('/login')
     }
-    const isValidInput = () => {
-        setObjCheckInput(defaultValidInput);
-        if (!name) {
-            toast.error("Vui lòng nhập họ và tên!");
-            setObjCheckInput({ ...defaultValidInput, isValidName: false });
-            return false;
-        }
-        if (!email) {
-            toast.error("Vui lòng nhập email!");
-            setObjCheckInput({ ...defaultValidInput, isValidEmail: false });
-            return false;
-        }
-        let regx = /^\S+@\S+\.\S+$/;
-        if (!regx.test(email)) {
-            setObjCheckInput({ ...defaultValidInput, isValidEmail: false });
-            toast.error("Email này không hợp lệ");
-            return false;
-        }
-        if (!phone) {
-            toast.error("Vui lòng nhập số điện thoại");
-            setObjCheckInput({ ...defaultValidInput, isValidPhone: false });
-            return false;
-        }
-        if (!userName) {
-            toast.error("Vui lòng nhập tên đăng nhập!");
-            setObjCheckInput({ ...defaultValidInput, isValidUsername: false });
-            return false;
-        }
-        if (!password) {
-            toast.error("Vui lòng nhập mật khẩu");
-            setObjCheckInput({ ...defaultValidInput, isValidPassword: false });
-            return false;
-        }
-        if (password !== confirmPassword) {
-            toast.error("Mật khẩu của bạn không giống nhau!");
-            setObjCheckInput({ ...defaultValidInput, isValidConfirmPassword: false });
-            return false;
-        } else {
-            return true;
-        }
-    }
 
-    const handleRegister = async () => {
-        let check = isValidInput()
-        if (check === true) {
+    const handleRegister = async (data) => {
+        let serverData = await registerNewUser({
+            name: data.name,
+            email: data.email,
+            phone: data.phone,
+            password: data.password
+        })
 
-            let serverData = await registerNewUser({
-                name,
-                email,
-                phone,
-                userName,
-                password
-            })
-
-            if (serverData.EC === 0) {
-                toast.success(serverData.EM);
-                navigate('/login')
-            }
-            else {
-                toast.error(serverData.EM)
-            }
+        if (serverData.EC === 0) {
+            toast.success(serverData.EM);
+            navigate('/login')
         }
+        else {
+            toast.error(serverData.EM)
+        }
+
     }
     const handlePressEnter = (event) => {
         if (event.charCode === 13 && event.code === "Enter") {
             handleRegister();
         }
     }
+
     return (<>
         <div className="register-container ">
             <div className="container">
@@ -105,95 +83,96 @@ const Register = () => {
 
                     <div className="content-right col-12 col-sm-5  d-flex flex-column gap-3 py-3 ">
                         <div className="brand  d-block d-sm-none ">Đăng kí</div>
-                        <div className="form-group">
-                            <label className="">Họ và tên <span className="text-danger">(*)</span></label>
-                            <input
-                                type="text"
-                                className={
-                                    objCheckInput.isValidName
-                                        ? "form-control"
-                                        : "form-control is-invalid"
-                                }
-                                value={name}
-                                onChange={(event) => setName(event.target.value)}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label className="">Email <span className="text-danger">(*)</span></label>
-                            <input
-                                type="text"
-                                className={
-                                    objCheckInput.isValidEmail
-                                        ? "form-control"
-                                        : "form-control is-invalid"
-                                }
-                                value={email}
-                                onChange={(event) => setEmail(event.target.value)}
+                        <form onSubmit={formik.handleSubmit}>
+                            <div className="form-group">
+                                <label className="">Họ và tên <span className="text-danger">(*)</span></label>
+                                <input
+                                    type="text"
+                                    id="name"
+                                    name="name"
+                                    className={
+                                        "form-control"
+                                    }
+                                    value={formik.values.name}
+                                    onChange={formik.handleChange}
+                                />
+                                {formik.errors.name && (
+                                    <p className="err-message">{formik.errors.name}</p>
+                                )}
+                            </div>
+                            <div className="form-group">
+                                <label className="">Email <span className="text-danger">(*)</span></label>
+                                <input
+                                    type="email"
+                                    id="email"
+                                    name="email"
+                                    className={
+                                        "form-control"
+                                    }
+                                    value={formik.values.email}
+                                    onChange={formik.handleChange}
+                                />
+                                {formik.errors.email && (
+                                    <p className=" err-message">{formik.errors.email}</p>
+                                )}
+                            </div>
+                            <div className="form-group">
+                                <label className="">Số điện thoại <span className="text-danger">(*)</span></label>
+                                <input
+                                    type="text"
+                                    id="phone"
+                                    name="phone"
+                                    className={
+                                        "form-control"
+                                    }
+                                    value={formik.values.phone}
+                                    onChange={formik.handleChange}
+                                />
+                                {formik.errors.phone && (
+                                    <p className=" err-message">{formik.errors.phone}</p>
+                                )}
+                            </div>
 
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label className="">Số điện thoại <span className="text-danger">(*)</span></label>
-                            <input
-                                type="text"
-                                className={
-                                    objCheckInput.isValidPhone
-                                        ? "form-control"
-                                        : "form-control is-invalid"
-                                }
-                                value={phone}
-                                onChange={(event) => setPhone(event.target.value)}
-
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label className="">Tên đăng nhập <span className="text-danger">(*)</span></label>
-                            <input
-                                type="text"
-                                className={
-                                    objCheckInput.isValidUsername
-                                        ? "form-control"
-                                        : "form-control is-invalid"
-                                }
-                                value={userName}
-                                onChange={(event) => setUserName(event.target.value)}
-
-                            />
-                        </div>
-                        <div className="form-group input-password">
-                            <label className="">Mật khẩu <span className="text-danger">(*)</span></label>
-                            <input
-                                type={isShowPassword ? "text" : "password"}
-                                className={
-                                    objCheckInput.isValidPassword
-                                        ? "form-control"
-                                        : "form-control is-invalid"
-                                }
-                                value={password}
-                                onChange={(event) => setPassword(event.target.value)}
-
-                            />
-                            <i onClick={() => setIsShowPassword(!isShowPassword)} className={isShowPassword ? "fa-solid fa-eye" : "fa-solid fa-eye-slash"}></i>
-                        </div>
-                        <div className="form-group input-password">
-                            <label className="">Nhập lại mật khẩu <span className="text-danger">(*)</span></label>
-                            <input
-                                type={isShowRePassword ? "text" : "password"}
-                                className={
-                                    objCheckInput.isValidConfirmPassword
-                                        ? "form-control"
-                                        : "form-control is-invalid"
-                                }
-                                value={confirmPassword}
-                                onChange={(event) => setConfirmPassword(event.target.value)}
-                            />
-                            <i onClick={() => setIsShowRePassword(!isShowRePassword)} className={isShowRePassword ? "fa-solid fa-eye" : "fa-solid fa-eye-slash"}></i>
-                        </div>
-                        <button className="btn btn-primary" onClick={() => handleRegister()}
-                            onKeyDown={(event) => handlePressEnter(event)}
-                        >
-                            Đăng ký
-                        </button>
+                            <div className="form-group input-password">
+                                <label className="">Mật khẩu <span className="text-danger">(*)</span></label>
+                                <input
+                                    type={isShowPassword ? "text" : "password"}
+                                    name="password"
+                                    id="password"
+                                    className={
+                                        "form-control"
+                                    }
+                                    value={formik.values.password}
+                                    onChange={formik.handleChange}
+                                />
+                                <i onClick={() => setIsShowPassword(!isShowPassword)} className={isShowPassword ? "fa-solid fa-eye" : "fa-solid fa-eye-slash"}></i>
+                                {formik.errors.password && (
+                                    <p className=" err-message">{formik.errors.password}</p>
+                                )}
+                            </div>
+                            <div className="form-group input-password">
+                                <label className="">Nhập lại mật khẩu <span className="text-danger">(*)</span></label>
+                                <input
+                                    type={isShowRePassword ? "text" : "password"}
+                                    id="confirmedPassword"
+                                    name="confirmedPassword"
+                                    className={
+                                        "form-control"
+                                    }
+                                    value={formik.values.confirmedPassword}
+                                    onChange={formik.handleChange}
+                                />
+                                <i onClick={() => setIsShowRePassword(!isShowRePassword)} className={isShowRePassword ? "fa-solid fa-eye" : "fa-solid fa-eye-slash"}></i>
+                                {formik.errors.confirmedPassword && (
+                                    <p className=" err-message">{formik.errors.confirmedPassword}</p>
+                                )}
+                            </div>
+                            <button type="submit" className="btn btn-primary mt-3 w-100"
+                                onKeyDown={(event) => handlePressEnter(event)}
+                            >
+                                Đăng ký
+                            </button>
+                        </form>
 
                         <hr></hr>
                         <div className="text-center">

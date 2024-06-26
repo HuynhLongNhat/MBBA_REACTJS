@@ -1,0 +1,18 @@
+.outstanding_product {
+    display: flex;
+}
+
+/* Thay đổi màu của mũi tên khi không hover */
+.ant-carousel .slick-arrow {
+    color: black;
+}
+
+/* Thay đổi màu của mũi tên khi hover */
+.ant-carousel .slick-arrow:hover {
+    color: black;
+}
+
+/* Thay đổi màu của mũi tên khi active */
+.ant-carousel .slick-arrow:active {
+    color: black;
+}

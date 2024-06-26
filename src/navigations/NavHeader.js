@@ -46,7 +46,7 @@ const NavHeader = () => {
 
                                 <>
                                     <Nav.Item className="nav-link">
-                                        {user && user.username ? `  Chào mừng ${user.username}` : ""}
+                                        {user && user.name ? `  Chào mừng ${user.name}` : ""}
 
 
                                     </Nav.Item>

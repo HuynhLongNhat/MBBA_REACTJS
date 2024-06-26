@@ -1,5 +1,15 @@
-*{
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+.content {
+  // display: flex;
+  .side-bar {
+    // width: 20%;
+  }
+
+  .app-route {
+    // width: 80%;
+  }
 }

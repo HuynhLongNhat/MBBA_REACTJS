@@ -15,10 +15,10 @@ export const handleLoginUser = createAsyncThunk(
     "user/login-user",
     async (data) => {
         const res = await LoginUser(data);
-
+        console.log("data", res)
         localStorage.setItem('token', res.DT.access_token);
         localStorage.setItem("email", res.DT.email)
-        localStorage.setItem("username", res.DT.username);
+        localStorage.setItem("name", res.DT.name);
         localStorage.setItem("groupWithRoles", res.DT.groupWithRoles.name);
         if (res && res.EC === 0) {
             toast.success(res.EM)
@@ -129,7 +129,7 @@ const initialState = {
     user: {
         groupWithRoles: '',
         email: '',
-        username: '',
+        name: '',
         auth: null,
         token: ''
     },
@@ -167,7 +167,7 @@ export const UserSlice = createSlice({
                     user: {
                         email: payload.DT.email,
                         token: payload.DT.access_token,
-                        username: payload.DT.username,
+                        name: payload.DT.name,
                         auth: true,
                         groupWithRoles: payload.DT.groupWithRoles,
                     },
@@ -196,7 +196,7 @@ export const UserSlice = createSlice({
                     user: {
                         email: localStorage.getItem('email'),
                         token: localStorage.getItem('token'),
-                        username: localStorage.getItem('username'),
+                        name: localStorage.getItem('name'),
                         groupWithRoles: localStorage.getItem('groupWithRoles'),
                         auth: true
                     },
@@ -208,7 +208,7 @@ export const UserSlice = createSlice({
             .addCase(LogOutUser.fulfilled, (state, { payload }) => {
                 localStorage.removeItem('token')
                 localStorage.removeItem('email')
-                localStorage.removeItem('username')
+                localStorage.removeItem('name')
                 localStorage.removeItem('groupWithRoles')
                 Cookies.remove('token');
 

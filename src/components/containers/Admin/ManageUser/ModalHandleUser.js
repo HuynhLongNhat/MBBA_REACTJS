@@ -18,7 +18,7 @@ function ModalHandleUser(props) {
     const [email, setEmail] = useState('')
     const [phone, setPhone] = useState('')
     const [name, setName] = useState('')
-    const [username, setUsername] = useState('')
+
     const [password, setPassword] = useState('')
     const [address, setAddress] = useState('')
     const [gender, setGender] = useState(listGender[0])
@@ -29,7 +29,7 @@ function ModalHandleUser(props) {
         email: true,
         phone: true,
         name: true,
-        username: true,
+
         password: true,
         address: true,
         gender: true,
@@ -48,7 +48,7 @@ function ModalHandleUser(props) {
             setName(dataEditUser.name)
             setEmail(dataEditUser.email)
             setPhone(dataEditUser.phone);
-            setUsername(dataEditUser.username);
+
             setAddress(dataEditUser.address);
             setGender(dataEditUser.gender);
             setGroup(dataEditUser.groupId)
@@ -62,7 +62,7 @@ function ModalHandleUser(props) {
             setName(null);
             setPhone(null);
             setPassword(null)
-            setUsername(null)
+
             setAddress(null);
             setGender(listGender[0]);
             setGroup(null)
@@ -87,11 +87,7 @@ function ModalHandleUser(props) {
             setCheckValid({ ...defaultValidInput, name: false });
             return false;
         }
-        if (!username) {
-            toast.error('Vui lòng nhập tên đăng nhập!');
-            setCheckValid({ ...defaultValidInput, username: false });
-            return false;
-        }
+
         if (action !== "UPDATE" && !password) {
             toast.error('Vui lòng nhập mật khẩu!');
             setCheckValid({ ...defaultValidInput, password: false });
@@ -122,7 +118,7 @@ function ModalHandleUser(props) {
                 email: email,
                 phone: phone,
                 name: name,
-                username: username,
+
                 password: password,
                 address: address,
                 gender: gender,
@@ -134,7 +130,7 @@ function ModalHandleUser(props) {
                     email: email,
                     phone: phone,
                     name: name,
-                    username: username,
+
                     password: password,
                     address: address,
                     gender: gender,
@@ -147,7 +143,7 @@ function ModalHandleUser(props) {
                 setEmail(" ");
                 setPhone(" ");
                 setPassword('')
-                setUsername(" ")
+
                 setAddress(" ");
                 setGender(listGender[0]);
                 setGroup(" ")
@@ -211,19 +207,7 @@ function ModalHandleUser(props) {
                                 onChange={(event) => setName(event.target.value)}
                             ></input>
                         </div>
-                        <div className="col-12 col-sm-6 form-group">
-                            <label>Tên đăng nhập</label>
-                            <input
-                                className={
-                                    checkValid.username
-                                        ? "form-control"
-                                        : "form-control is-invalid"
-                                }
-                                type="text"
-                                value={username}
-                                onChange={(event) => setUsername(event.target.value)}
-                            ></input>
-                        </div>
+
                         <div className="col-12 col-sm-6 form-group input-password">
                             {action === "CREATE" && (
                                 <>

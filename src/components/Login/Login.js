@@ -5,6 +5,8 @@ import Modal from "react-bootstrap/Modal";
 import { toast } from "react-toastify";
 import { handleLoginUser } from "../../redux/slices/UserSlice";
 import { useDispatch, useSelector } from "react-redux";
+import * as Yup from "yup";
+import { useFormik } from "formik"
 import "./Login.scss"
 const Login = () => {
     const dispatch = useDispatch();
@@ -15,45 +17,44 @@ const Login = () => {
     const navigateRegister = () => {
         navigate('/register')
     }
-    const [valueLogin, setValueLogin] = useState('');
-    const [password, setPassword] = useState('');
-    const defaultValidInput = {
-        isValidValueLogin: true,
-        isValidPassWord: true
-    }
-    const [objCheckInput, setObjCheckInput] = useState(defaultValidInput)
-    const checkInvalidInput = () => {
-        setObjCheckInput(defaultValidInput);
-        if (!valueLogin) {
-            toast.error("Vui lòng nhập email hoặc số điện thoại!");
+    const formik = useFormik({
+        initialValues: {
+            valueLogin: "",
+            password: ""
+        },
+        validationSchema: Yup.object({
+            valueLogin: Yup.string()
+                .required("Vui lòng nhập email hoặc số điện thoại!")
+                .matches(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$|^(\+?\d{1,4}[\s-])?(?!0+\s+,?$)\d{10,14}(?! +$)$/,
+                    "Vui lòng nhập email hoặc số điện thoaị hợp lệ hợp lệ!"),
 
-            setObjCheckInput({ ...defaultValidInput, isValidValueLogin: false });
-            return false;
+            password: Yup.string()
+                .required("Vui lòng nhập mật khẩu!")
+                .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                    "Mật khẩu của bạn phải tối thiểu 8 ký tự, có ít nhất 1 chữ hoa, 1 chữ thường, một số và một ký tự đặc biệt!"),
+
+
+        }),
+        onSubmit: (values) => {
+            handleLogin(values)
+
         }
-        if (!password) {
-            toast.error("Vui lòng nhập mật khẩu!");
-            setObjCheckInput({ ...defaultValidInput, isValidPassword: false });
-            return false;
-        }
-        return true;
-    };
+    })
 
     useEffect(() => {
         if (user && user.auth === true) {
             navigate('/')
         }
     }, [user])
-    const handleLogin = async () => {
-        let check = checkInvalidInput();
-        if (check === true) {
-            let res = dispatch(handleLoginUser({
-                valueLogin,
-                password
-            }))
-            if (res) {
-                navigate('/')
-            }
+    const handleLogin = async (data) => {
+        let res = dispatch(handleLoginUser({
+            valueLogin: data.valueLogin,
+            password: data.password
+        }))
+        if (res) {
+            navigate('/')
         }
+
 
     }
 
@@ -72,39 +73,53 @@ const Login = () => {
                     </div>
 
                     <div className="content-right col-12 col-sm-5  d-flex flex-column gap-3 py-3 ">
-                        <div className="brand  d-block d-sm-none ">Long Nhat</div>
-                        <div className="form-group">
-                            <label className="">Email hoặc số điện thoại <span className="text-danger">(*)</span></label>
-                            <input
-                                type="text"
-                                className={
-                                    objCheckInput.isValidValueLogin ? "form-control" : "form-control is-invalid"
-                                }
-                                value={valueLogin}
-                                onChange={(event) => setValueLogin(event.target.value)}
-                            />
-                        </div>
-                        <div className="form-group input-password">
-                            <label className="">Mật khẩu<span className="text-danger">(*)</span></label>
-                            <input
+                        <form onSubmit={formik.handleSubmit}>
 
-                                type={isShowPassword ? "text" : "password"}
-                                className={
-                                    objCheckInput.isValidPassWord ? "form-control" : "form-control is-invalid"
-                                }
 
-                                value={password}
-                                onChange={(event) => setPassword(event.target.value)}
+                            <div className="brand  d-block d-sm-none ">Long Nhat</div>
+                            <div className="form-group">
+                                <label className="">Email hoặc số điện thoại <span className="text-danger">(*)</span></label>
+                                <input
+                                    type="text"
+                                    id="valueLogin"
+                                    name="valueLogin"
+                                    className={
+                                        "form-control"
+                                    }
+                                    value={formik.values.valueLogin}
+                                    onChange={formik.handleChange}
+                                />
+                                {formik.errors.valueLogin && (
+                                    <p className="err-message">{formik.errors.valueLogin}</p>
+                                )}
+                            </div>
+                            <div className="form-group input-password">
+                                <label className="">Mật khẩu<span className="text-danger">(*)</span></label>
+                                <input
 
-                            />
-                            <i onClick={() => setIsShowPassword(!isShowPassword)} className={isShowPassword ? "fa-solid fa-eye" : "fa-solid fa-eye-slash"}></i>
-                        </div>
-                        <button className="btn btn-primary" onClick={() => handleLogin()}
-                            onKeyDown={(event) => handlePressEnter(event)}
-                        >
+                                    type={isShowPassword ? "text" : "password"}
+                                    id="password"
+                                    name="password"
+                                    className={
+                                        "form-control"
+                                    }
 
-                            Đăng nhập
-                        </button>
+                                    value={formik.values.password}
+                                    onChange={formik.handleChange}
+
+                                />
+                                <i onClick={() => setIsShowPassword(!isShowPassword)} className={isShowPassword ? "fa-solid fa-eye" : "fa-solid fa-eye-slash"}></i>
+                                {formik.errors.password && (
+                                    <p className="err-message">{formik.errors.password}</p>
+                                )}
+                            </div>
+                            <button className="btn btn-primary mt-3 w-100" type="submit"
+                                onKeyDown={(event) => handlePressEnter(event)}
+                            >
+
+                                Đăng nhập
+                            </button>
+                        </form>
                         <span className="text-center ">
                             <a className="forgot-password" href="#">
                                 Quên mật khẩu

@@ -13,6 +13,7 @@ import AppRoutes from './routes/AppRoutes';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import Header from './components/containers/Header/Header';
+import SideBar from './components/Sidebar/Sidebar';
 // import 'antd/dist/antd.scss';
 function App() {
   const dispatch = useDispatch();
@@ -27,8 +28,16 @@ function App() {
       <BrowserRouter>
         <NavHeader />
         {isLogin && <Header />}
+        <div className='content'>
+          <div className='side-bar'>
 
-        <AppRoutes />
+            <SideBar />
+          </div>
+          <div className='app-route'>
+
+            <AppRoutes />
+          </div>
+        </div>
       </BrowserRouter>
 
       <ToastContainer

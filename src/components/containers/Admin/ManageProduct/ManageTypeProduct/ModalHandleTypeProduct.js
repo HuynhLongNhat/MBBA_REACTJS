@@ -4,11 +4,9 @@ import Button from "react-bootstrap/Button";
 import { CreateNewTypeProduct, UpdateTypeProduct } from "../../../../../service/userService";
 import CommonUtils from "./../../../../../utils/CommonUtils"
 import Modal from "react-bootstrap/Modal";
-// import {   } from "../../service/UserService";
 import { toast } from "react-toastify";
 import _ from "lodash";
 import "./ModalHandleTypeProduct.scss"
-
 import { useDispatch } from "react-redux";
 import { createTypeProduct, editTypeProduct } from "../../../../../redux/slices/ProductSlice"
 
